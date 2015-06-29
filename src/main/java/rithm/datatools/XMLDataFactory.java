@@ -3,7 +3,6 @@
  */
 package rithm.datatools;
 import java.io.FileInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,7 +14,10 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
+
 import rithm.defaultcore.*;
 
 import rithm.core.*;
@@ -40,6 +42,7 @@ public class XMLDataFactory extends rithm.core.DataFactory{
 	protected String curr_key = null, curr_value = null;
 	protected boolean new_event_found;
 	protected int QueueClearCount;
+	final static Logger logger = Logger.getLogger(XMLDataFactory.class);
 	public XMLDataFactory(String filename)
 	{
 		this.filename = filename;
@@ -129,12 +132,21 @@ public class XMLDataFactory extends rithm.core.DataFactory{
 						}
 						if(localpart.contains(timestampField))
 						{
-							curr_state.SetVal("timestamp", getCharacterData(curr_event,eventReader));
+							String timeStamp = getCharacterData(curr_event,eventReader);
+							curr_state.setValue("timestamp", timeStamp);
+							double tsAsDouble = 0;
+							try {
+								tsAsDouble = Double.parseDouble(timeStamp);
+								curr_state.setTimestamp(tsAsDouble);
+							} 
+							catch (NumberFormatException ne) {
+								logger.debug("Could not parse as timestamp !!" + timeStamp);
+							}
 						}
 						if(localpart.contains(fieldvalue))
 						{
 							curr_value= getCharacterData(curr_event,eventReader);
-							curr_state.SetVal(curr_key, curr_value);
+							curr_state.setValue(curr_key, curr_value);
 							if(System.getProperty("DebugMode")!= null)
 							{
 								System.err.println(curr_key + "=" + curr_value);

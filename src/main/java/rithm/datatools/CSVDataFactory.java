@@ -8,7 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
 import rithm.defaultcore.*;
+
 import com.google.gson.Gson;
 
 import rithm.core.ProgState;
@@ -21,6 +25,7 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 
 	protected BufferedReader csvFileReader;
 	protected boolean isFileOpened;
+	final static Logger logger = Logger.getLogger(CSVDataFactory.class);
 	public CSVDataFactory(String inputfilename)
 	{
 		isFileOpened=true;
@@ -113,7 +118,16 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 					for(String token:tokens)
 					{
 						String[] pair = token.split("=");
-						defProgState.SetVal(pair[0], pair[1]);
+						defProgState.setValue(pair[0], pair[1]);
+						if(pair[0].equals("timestamp"))
+						{
+							try{
+								Double doubleTs = Double.parseDouble(pair[1]);
+								defProgState.setTimestamp(doubleTs);
+							}catch(NumberFormatException ne){
+								logger.debug("Could not parse as timestamp !!" + pair[1]);
+							}
+						}
 					}
 					return defProgState;
 				}
