@@ -56,17 +56,6 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 		return null;
 	}
 
-	@Override
-	public void setType(int type) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getType() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public String getNextJSONEvent() {
