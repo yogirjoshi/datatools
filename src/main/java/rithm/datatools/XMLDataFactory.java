@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import rithm.defaultcore.*;
-
 import rithm.core.*;
 /**
  * @author y2joshi
@@ -52,7 +51,10 @@ public class XMLDataFactory extends rithm.core.DataFactory{
 		inputFactory = XMLInputFactory.newInstance();
 		try
 		{
-			xml_input_stream  = new FileInputStream(filename);
+			if(filename == null)
+				xml_input_stream = System.in;
+			else
+				xml_input_stream  = new FileInputStream(filename);
 			eventReader = inputFactory.createXMLEventReader(xml_input_stream);
 		}
 		catch(Exception e)
@@ -60,26 +62,6 @@ public class XMLDataFactory extends rithm.core.DataFactory{
 			System.err.println(e.getMessage());
 		}
 		QueueClearCount = 0;
-	}
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
-		
-	}
-
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setType(int type) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public int getType() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -272,5 +254,16 @@ public class XMLDataFactory extends rithm.core.DataFactory{
 	public ProgState getProgStateAtTimeStamp(double Ts) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public boolean closeDataSource() {
+		// TODO Auto-generated method stub
+		try{
+			eventReader.close();
+		}catch(XMLStreamException ie){
+			logger.fatal(ie.getMessage());
+			return false;
+		}
+		return true;
 	}
 }

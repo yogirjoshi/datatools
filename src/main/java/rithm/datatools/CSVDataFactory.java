@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -31,31 +32,24 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 		isFileOpened=true;
 		try
 		{
-			csvFileReader = new BufferedReader(new FileReader(inputfilename));
+//			System.out.println(inputfilename);
+			logger.debug("Initialized with " + inputfilename);
+			if(inputfilename == null)
+				csvFileReader = new BufferedReader(new InputStreamReader(System.in));
+			else
+				csvFileReader = new BufferedReader(new FileReader(inputfilename));
 		}
 		catch(FileNotFoundException fe)
 		{
+			logger.fatal(fe.getMessage());
+			isFileOpened=false;
 			try {
 				csvFileReader.close();
 			} catch (IOException e) {
-				// TODO: handle exception
-				e.printStackTrace();
+				logger.fatal(e.getMessage());
 			}
-			isFileOpened=false;
 		}
 	}
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	public String getNextJSONEvent() {
@@ -90,7 +84,7 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 	@Override
 	public void export(String Outputfilename) {
 		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 	@Override
@@ -132,8 +126,7 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 	@Override
 	public boolean resetFilePosition() {
 		// TODO Auto-generated method stub
-	
-		return false;
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 	@Override
@@ -169,19 +162,34 @@ public class CSVDataFactory extends rithm.core.DataFactory{
 	@Override
 	public String getJSONAtTimeStamp(double Ts) {
 		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 	@Override
 	public ProgState getProgStateAtTimeStamp(double Ts) {
 		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 	@Override
 	public void clearBuffer() {
 		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
+	@Override
+	public boolean closeDataSource() {
+		// TODO Auto-generated method stub
+		if(isFileOpened){
+			try{
+				csvFileReader.close();
+			}catch(IOException ie){
+				logger.fatal(ie.getMessage());
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
 }
